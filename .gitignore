@@ -1,0 +1,18 @@
+# IDEs and Editors
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Build and Dependency directories (redundancy for root tracking)
+node_modules/
+dist/
+target/
+build/
