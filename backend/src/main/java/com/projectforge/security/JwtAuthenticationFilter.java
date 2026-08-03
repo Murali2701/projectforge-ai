@@ -32,18 +32,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain)
             throws ServletException, IOException {
-                String path = request.getServletPath();
 
-    if (path.startsWith("/api/auth")) {
-        filterChain.doFilter(request, response);
-        return;
-    }
+        String path = request.getServletPath();
 
-        System.out.println("==================================");
-        System.out.println("Request URI : " + request.getRequestURI());
+        if (path.equals("/") ||
+                path.startsWith("/api/auth") ||
+                path.startsWith("/swagger-ui") ||
+                path.startsWith("/v3/api-docs") ||
+                path.equals("/swagger-ui.html") ||
+                path.equals("/favicon.ico") ||
+                path.equals("/error")) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         String authHeader = request.getHeader("Authorization");
-        System.out.println("Authorization : " + authHeader);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
@@ -55,15 +59,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
 
             String email = jwtService.extractUsername(token);
-            System.out.println("JWT Email : " + email);
 
             if (email != null &&
                     SecurityContextHolder.getContext().getAuthentication() == null) {
 
                 UserDetails userDetails =
                         userDetailsService.loadUserByUsername(email);
-
-                System.out.println("Loaded User : " + userDetails.getUsername());
 
                 if (jwtService.validateToken(token, userDetails)) {
 
@@ -77,17 +78,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             new WebAuthenticationDetailsSource()
                                     .buildDetails(request));
 
-                    SecurityContextHolder
-                            .getContext()
+                    SecurityContextHolder.getContext()
                             .setAuthentication(authentication);
-
-                    System.out.println("JWT Authentication SUCCESS");
                 }
             }
 
         } catch (ExpiredJwtException e) {
-
-            System.out.println("JWT Token Expired");
 
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("JWT Token Expired");
@@ -95,21 +91,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         } catch (JwtException e) {
 
-            System.out.println("Invalid JWT Token");
-
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Invalid JWT Token");
             return;
 
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Authentication Failed");
-            return;
         }
 
         filterChain.doFilter(request, response);
     }
+
 }
