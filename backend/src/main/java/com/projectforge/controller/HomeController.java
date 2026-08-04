@@ -8,7 +8,9 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return "🚀 ProjectForge AI Backend is Running Successfully";
-    }
 
+        System.out.println(">>>>>>>> HOME CONTROLLER HIT <<<<<<<<");
+
+        return "ProjectForge Backend Running";
+    }
 }
