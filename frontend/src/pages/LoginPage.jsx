@@ -17,7 +17,7 @@ function LoginPage() {
 
         try {
             const response = await loginUser({
-                email,
+                email: email.trim().toLowerCase(),
                 password,
             });
             login(response.token);

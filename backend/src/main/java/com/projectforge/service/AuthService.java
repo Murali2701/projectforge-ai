@@ -31,15 +31,16 @@ public class AuthService {
     }
 
     public String register(RegisterRequest request) {
+        String email = request.email() != null ? request.email().trim().toLowerCase() : null;
 
-        if (userRepository.existsByEmail(request.email())) {
+        if (userRepository.existsByEmail(email)) {
             return "Email already exists";
         }
 
         User user = new User();
 
         user.setName(request.name());
-        user.setEmail(request.email());
+        user.setEmail(email);
         user.setPassword(passwordEncoder.encode(request.password()));
         user.setRole("USER");
         user.setCreatedAt(LocalDateTime.now());
@@ -51,10 +52,12 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest request) {
 
-    System.out.println("========== LOGIN ==========");
-    System.out.println("Email: " + request.email());
+    String email = request.email() != null ? request.email().trim().toLowerCase() : null;
 
-    User user = userRepository.findByEmail(request.email())
+    System.out.println("========== LOGIN ==========");
+    System.out.println("Email: " + email);
+
+    User user = userRepository.findByEmail(email)
             .orElseThrow(() ->
                     new UserNotFoundException("User not found"));
 

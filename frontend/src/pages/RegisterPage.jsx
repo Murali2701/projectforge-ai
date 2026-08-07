@@ -16,15 +16,26 @@ function RegisterPage() {
         e.preventDefault();
 
         try {
-            await register(form);
+            await register({
+                ...form,
+                email: form.email.trim().toLowerCase(),
+            });
             alert("Registration Successful");
             navigate("/login");
         } catch (err) {
             console.error(err);
-            alert(
-                err.response?.data?.message ||
-                "Failed to register. Please check details."
-            );
+            const errorData = err.response?.data;
+            let errMsg = "Failed to register. Please check details.";
+            if (errorData) {
+                if (typeof errorData === "string") {
+                    errMsg = errorData;
+                } else if (errorData.message) {
+                    errMsg = errorData.message;
+                } else if (typeof errorData === "object") {
+                    errMsg = Object.values(errorData).join("\n");
+                }
+            }
+            alert(errMsg);
         }
     };
 
@@ -153,7 +164,7 @@ function RegisterPage() {
                                     </span>
                                     <input
                                         type="password"
-                                        placeholder="Security Key / Password"
+                                        placeholder="Security Key / Password (min 6 chars)"
                                         className="bg-transparent border-none outline-none w-full text-white placeholder:text-slate-600 text-sm"
                                         value={form.password}
                                         onChange={(e) =>
@@ -162,6 +173,7 @@ function RegisterPage() {
                                                 password: e.target.value,
                                             })
                                         }
+                                        minLength={6}
                                         required
                                     />
                                 </div>
