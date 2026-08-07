@@ -77,9 +77,9 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(List.of(
-                "http://localhost:5173",
-                "https://your-project.vercel.app"
-        ));
+    "http://localhost:5173",
+    "https://projectforge-ai-eight.vercel.app"
+));
 
         configuration.setAllowedMethods(List.of(
                 "GET",
