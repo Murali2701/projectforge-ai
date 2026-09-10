@@ -18,7 +18,6 @@ import com.projectforge.service.ProjectService;
 
 @RestController
 @RequestMapping("/api/project")
-@CrossOrigin(origins = "http://localhost:5173")
 public class AiProjectController {
 
     private static final Logger log = LoggerFactory.getLogger(AiProjectController.class);
